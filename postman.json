@@ -1,0 +1,408 @@
+{
+	"info": {
+		"_postman_id": "6cbcecf2-a0f5-4c1c-9ad2-b43db01158ef",
+		"name": "stu-oauth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "account",
+							"value": "15cthuang",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Candy123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/oauth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"oauth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authorize",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca74dcb4-4b0c-492b-b282-3417b3dd34c9",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"code\", data.authorizationCode);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{AccessToken}}",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/oauth/authorise?response_type=code&client_id=stu&redirect_uri=https://www.baidu.com&state=teststate&scope=get_user_info",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"oauth",
+						"authorise"
+					],
+					"query": [
+						{
+							"key": "response_type",
+							"value": "code"
+						},
+						{
+							"key": "client_id",
+							"value": "stu"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://www.baidu.com"
+						},
+						{
+							"key": "state",
+							"value": "teststate"
+						},
+						{
+							"key": "scope",
+							"value": "get_user_info"
+						}
+					]
+				},
+				"description": "Based on Bearer Token in Password Grant"
+			},
+			"response": [
+				{
+					"name": "Authorize ",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AccessToken}}",
+								"disabled": false
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/authorise?response_type=code&client_id=democlient&redirect_uri=http://localhost:3000&state=teststate&scope=profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"authorise"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "democlient"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:3000"
+								},
+								{
+									"key": "state",
+									"value": "teststate"
+								},
+								{
+									"key": "scope",
+									"value": "profile"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive",
+							"name": "Connection",
+							"description": "Options that are desired for the connection"
+						},
+						{
+							"key": "Content-Length",
+							"value": "228",
+							"name": "Content-Length",
+							"description": "The length of the response body in octets (8-bit bytes)"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8",
+							"name": "Content-Type",
+							"description": "The mime type of this content"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 28 Jun 2018 04:07:06 GMT",
+							"name": "Date",
+							"description": "The date and time that the message was sent"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"e4-a6b3yto63Vv1W50L/v2eZrNELBw\"",
+							"name": "ETag",
+							"description": "An identifier for a specific version of a resource, often a message digest"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express",
+							"name": "X-Powered-By",
+							"description": "Specifies the technology (ASP.NET, PHP, JBoss, e.g.) supporting the web application (version details are often in X-Runtime, X-Version, or X-AspNet-Version)"
+						}
+					],
+					"cookie": [],
+					"body": "{\"authorizationCode\":\"authorizationCode.authorization_code\",\"expiresAt\":1530245226246,\"redirectUri\":\"http://localhost:3000\",\"scope\":\"accessToken.scope\",\"client\":{\"id\":\"accessToken.client_id\"},\"user\":{\"id\":\"accessToken.user_id\"}}"
+				}
+			]
+		},
+		{
+			"name": "Authorization Grant for web",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d18ceff5-db1f-47ae-9737-6b9671d3c90b",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"AccessToken\", data.data.accessToken);",
+							"postman.setEnvironmentVariable(\"RefreshToken\", data.data.refreshToken);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic ZGVtb2NsaWVudDpkZW1vY2xpZW50c2VjcmV0",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "60eff43192f33dd14968af9dc017c20e840f4449",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://www.baidu.com",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "stu",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "stu-secret",
+							"type": "text"
+						},
+						{
+							"key": "user_id",
+							"value": "user_id",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/oauth/token",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				},
+				"description": "Based on code in Authorize"
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "207b2e46-44e8-47d9-8f3b-21fb991666b0",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"AccessToken\", data.data.accessToken);",
+							"postman.setEnvironmentVariable(\"RefreshToken\", data.data.refreshToken);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic ZGVtb2NsaWVudDpkZW1vY2xpZW50c2VjcmV0",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"type": "text"
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{RefreshToken}}",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "stu",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "stu-secret",
+							"type": "text"
+						},
+						{
+							"key": "access_token",
+							"value": "{{AccessToken}}",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/oauth/token",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserInfo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{AccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/resource/userInfo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"resource",
+						"userInfo"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e865d1d9-d4f9-479b-9f25-3b981803ed13",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0bb7d42d-9c0c-4c56-b3f7-4c5d7ed899a2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
